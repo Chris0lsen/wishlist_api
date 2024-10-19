@@ -12,6 +12,7 @@ scope "/api", WishlistBeWeb do
   get "/auth/steam/return", AuthController, :callback
 
   get "/search", SearchController, :get
+  get "/wishlist", WishlistController, :get
 end
 
 

@@ -8,14 +8,20 @@ defmodule WishlistBeWeb.AuthController do
   end
 
   def callback(conn, params) do
-    case Steam.verify_openid_response(params) do
+    case WishlistBe.Steam.verify_openid_response(params) do
       {:ok, steam_id} ->
-        json(conn, %{steam_id: steam_id})
+        # Redirect to the frontend with the steam_id as a query parameter
+        redirect(conn, external: frontend_redirect_url(steam_id))
 
       {:error, reason} ->
         conn
-        |> put_status(:unauthorized)
+        |> put_status(:bad_request)
         |> json(%{error: reason})
     end
+  end
+
+  defp frontend_redirect_url(steam_id) do
+    # URL to your frontend with steam_id as a query parameter
+    "http://192.168.68.90:5173/auth/steam/callback?steam_id=#{steam_id}"
   end
 end
