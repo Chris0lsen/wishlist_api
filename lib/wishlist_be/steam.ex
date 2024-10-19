@@ -63,7 +63,7 @@ defmodule WishlistBe.Steam do
   defp callback_url do
     # Return the URL where Steam should redirect back after authentication
     # Adjust the host and port as needed
-    "http://192.168.68.90:5173/api/auth/steam/return"
+    "http://192.168.68.90:5173/"
   end
 
   defp realm do
