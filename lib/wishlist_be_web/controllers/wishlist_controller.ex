@@ -7,6 +7,7 @@ defmodule WishlistBeWeb.WishlistController do
     # TODO pass cc and page num as params
     case Req.get(url) do
       {:ok, %{status: 200, body: body}} ->
+        IO.inspect(body, label: "wishlist req")
         json(conn, body)
 
         {:ok, %{status: status, body: body}} ->

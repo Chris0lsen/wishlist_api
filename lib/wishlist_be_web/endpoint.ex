@@ -47,6 +47,6 @@ defmodule WishlistBeWeb.Endpoint do
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
-  plug CORSPlug, origin: ["http://ha.local:5173"]
+  plug CORSPlug, origin: ["http://ha.local:5173", "http://192.168.68.90:5173"]
   plug WishlistBeWeb.Router
 end

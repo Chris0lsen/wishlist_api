@@ -1,6 +1,7 @@
 defmodule WishlistBeWeb.AuthController do
   use WishlistBeWeb, :controller
   alias WishlistBe.Steam
+  alias WishlistBe.UserSession
 
   def request(conn, _params) do
     redirect_url = Steam.generate_openid_redirect_url()
@@ -8,20 +9,18 @@ defmodule WishlistBeWeb.AuthController do
   end
 
   def callback(conn, params) do
-    case WishlistBe.Steam.verify_openid_response(params) do
-      {:ok, steam_id} ->
-        # Redirect to the frontend with the steam_id as a query parameter
-        redirect(conn, external: frontend_redirect_url(steam_id))
-
+    case Steam.verify_openid_response(params) do
+      {:ok, user_info} ->
+        session_token = Ecto.UUID.generate()
+        UserSession.store_user_session(session_token, user_info)
+        # Set the session token as a cookie or return it in the response
+        conn
+        |> put_resp_cookie("session_token", session_token, http_only: true)
+        |> redirect(external: Steam.frontend_redirect_url(user_info))
       {:error, reason} ->
         conn
-        |> put_status(:bad_request)
-        |> json(%{error: reason})
+        |> put_flash(:error, "Authentication failed: #{reason}")
+        |> redirect(external: Steam.frontend_redirect_url())
     end
-  end
-
-  defp frontend_redirect_url(steam_id) do
-    # URL to your frontend with steam_id as a query parameter
-    "http://192.168.68.90:5173/auth/steam/callback?steam_id=#{steam_id}"
   end
 end
