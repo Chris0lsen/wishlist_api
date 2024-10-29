@@ -5,17 +5,28 @@ defmodule WishlistBeWeb.Router do
     plug :accepts, ["json"]
   end
 
-scope "/api", WishlistBeWeb do
-  pipe_through :api
+  pipeline :auth do
+    plug WishlistBeWeb.Plugs.AuthPlug
+  end
 
-  get "/auth/steam", AuthController, :request
-  get "/auth/steam/return", AuthController, :callback
+  scope "/api", WishlistBeWeb do
+    pipe_through :api
 
-  get "/search", SearchController, :get
-  get "/wishlist", WishlistController, :get
-end
+    get "/auth/steam", AuthController, :request
+    get "/auth/steam/return", AuthController, :callback
+    post "/auth/refresh", AuthController, :refresh
 
+    get "/steam/search", SteamController, :search
+  end
 
+  scope "/api", WishlistBeWeb do
+    pipe_through [:api, :auth]
+
+    get "/steam/wishlist", SteamController, :wishlist
+
+    get "/wishlists/:user_id", WishlistController, :index
+    get "/wishlists/:user_id/wishlist/:id", WishlistController, :get
+  end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:wishlist_be, :dev_routes) do

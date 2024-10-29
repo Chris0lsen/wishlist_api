@@ -72,13 +72,12 @@ defmodule WishlistBe.Steam do
   defp realm do
     # The realm (or trust root) is the base URL of your application
     url = get_config_url(:backend)
+
     %{url | path: nil, query: nil}
     |> URI.to_string()
   end
 
-
-
-  defp get_config_url(type) do
+  def get_config_url(type) do
     config = Application.get_env(:wishlist_be, :urls)[type]
 
     %URI{

@@ -78,3 +78,6 @@ config :wishlist_be, :urls,
     port: 4000,
     path: "/api/auth/steam/return"
   ]
+
+  config :wishlist_be, WishlistBe.Guardian,
+  secret_key: "secret"

@@ -9,8 +9,6 @@ defmodule WishlistBe.Application do
       {Phoenix.PubSub, name: WishlistBe.PubSub},
       {Finch, name: WishlistBe.Finch},
       WishlistBeWeb.Endpoint,
-      # Start the user session GenServer
-      WishlistBe.UserSession
     ]
 
     opts = [strategy: :one_for_one, name: WishlistBe.Supervisor]

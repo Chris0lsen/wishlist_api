@@ -53,6 +53,11 @@ config :wishlist_be, :urls,
     path: "/api/auth/steam/return"
   ]
 
+  config :wishlist_be, WishlistBe.Guardian,
+  issuer: "wishlist_be",
+  secret_key: System.get_env("JWT_SECRET_KEY")
+
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"
