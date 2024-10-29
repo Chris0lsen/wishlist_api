@@ -16,5 +16,6 @@ defmodule WishlistBe.Groups.Group do
     group
     |> cast(attrs, [:name])
     |> validate_required([:name])
+    |> put_assoc(:users, attrs[:users] || [])
   end
 end

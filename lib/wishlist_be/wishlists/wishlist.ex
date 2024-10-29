@@ -15,7 +15,7 @@ defmodule WishlistBe.Wishlists.Wishlist do
   @doc false
   def changeset(wishlist, attrs) do
     wishlist
-    |> cast(attrs, [:name])
-    |> validate_required([:name])
+    |> cast(attrs, [:name, :group_id])
+    |> validate_required([:name, :group_id])
   end
 end

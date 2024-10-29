@@ -5,10 +5,10 @@ defmodule WishlistBe.Accounts do
 
   import Ecto.Query, warn: false
   alias WishlistBe.Repo
-
   alias WishlistBe.Accounts.User
-
   alias WishlistBe.Accounts.RefreshToken
+  alias WishlistBe.Groups.Group
+  alias WishlistBe.Wishlists.Wishlist
 
   @doc """
   Returns the list of users.
@@ -39,8 +39,9 @@ defmodule WishlistBe.Accounts do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
-   @doc """
+  @doc """
   Retrieves a user by their Steam ID or creates a new one if not found.
+  If a new user is created, we also create a default group and wishlist for them.
 
   ## Examples
 
@@ -51,17 +52,40 @@ defmodule WishlistBe.Accounts do
       {:error, %Ecto.Changeset{}}
 
   """
-  def get_or_create_user_by_steam_id(steam_id) when is_binary(steam_id) do
-    user = case Repo.get_by(User, steam_id: steam_id) do
-      nil ->
-        %User{}
-        |> User.changeset(%{steam_id: steam_id})
-        |> Repo.insert!()
+def get_or_create_user_by_steam_id(steam_id) when is_binary(steam_id) do
+  case Repo.get_by(User, steam_id: steam_id) do
+    nil ->
+      Ecto.Multi.new()
+      |> Ecto.Multi.insert(:user, User.changeset(%User{}, %{steam_id: steam_id}))
+      |> Ecto.Multi.insert(:group, fn _changes ->
+        Group.changeset(%Group{}, %{name: "My Wishlists"})
+      end)
+      |> Ecto.Multi.run(:associate_user_group, fn repo, %{user: user, group: group} ->
+        group_changeset = group
+        |> Group.changeset(%{})
+        |> Ecto.Changeset.put_assoc(:users, [user])
 
-      result = %User{} -> result
-    end
-    {:ok, user}
+        repo.update(group_changeset)
+      end)
+      |> IO.inspect()
+      |> Ecto.Multi.insert(:wishlist, fn %{group: group} ->
+        IO.inspect(group, label: "GROUP")
+        Wishlist.changeset(%Wishlist{}, %{group_id: group.id, name: "My First Wishlist"})
+      end)
+      |> Repo.transaction()
+      |> case do
+        {:ok, %{user: user}} ->
+          {:ok, user}
+
+        {:error, _operation, reason, _changes_so_far} ->
+          {:error, reason}
+      end
+
+    user ->
+      {:ok, user}
   end
+end
+
 
   def get_or_create_user_by_steam_id(_invalid_steam_id) do
     {:error, :invalid_steam_id}
@@ -168,5 +192,4 @@ defmodule WishlistBe.Accounts do
     from(rt in RefreshToken, where: rt.token == ^token)
     |> Repo.update_all(set: [revoked: true])
   end
-
 end

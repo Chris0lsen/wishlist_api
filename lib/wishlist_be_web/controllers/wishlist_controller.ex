@@ -6,7 +6,7 @@ defmodule WishlistBeWeb.WishlistController do
     case Wishlists.list_wishlists_for_user(user_id) do
       wishlists when is_list(wishlists) ->
         wishlists
-      _ -> %{"Error" => "error"}
+      error -> %{"Error" => "Error: #{inspect(error)}"}
     end
 
   end
