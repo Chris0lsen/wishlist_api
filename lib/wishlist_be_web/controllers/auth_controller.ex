@@ -52,7 +52,7 @@ defmodule WishlistBeWeb.AuthController do
 
   defp frontend_redirect_url(access_token) do
     url = Steam.get_config_url(:frontend)
-    query_params = if access_token, do: %{token: access_token}, else: %{}
+    query_params = if access_token, do: %{access_token: access_token}, else: %{}
     query = URI.encode_query(query_params)
     URI.to_string(%{url | query: query})
   end

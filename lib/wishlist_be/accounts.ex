@@ -52,15 +52,15 @@ defmodule WishlistBe.Accounts do
 
   """
   def get_or_create_user_by_steam_id(steam_id) when is_binary(steam_id) do
-    case Repo.get_by(User, steam_id: steam_id) do
+    user = case Repo.get_by(User, steam_id: steam_id) do
       nil ->
         %User{}
         |> User.changeset(%{steam_id: steam_id})
-        |> Repo.insert()
+        |> Repo.insert!()
 
-      user ->
-        {:ok, user}
+      result = %User{} -> result
     end
+    {:ok, user}
   end
 
   def get_or_create_user_by_steam_id(_invalid_steam_id) do

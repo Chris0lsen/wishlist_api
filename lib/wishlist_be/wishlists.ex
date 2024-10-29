@@ -22,6 +22,22 @@ defmodule WishlistBe.Wishlists do
   end
 
   @doc """
+  Returns all wishlists for a given user
+
+  ## Examples
+
+      iex> list_wishlists_for_user(1)
+      [%Wishlist{}, ...]
+  """
+  def list_wishlists_for_user(user_id) do
+    query =
+      from w in Wishlist,
+        where: w.user_id == ^user_id
+
+    Repo.all(query)
+  end
+
+  @doc """
   Gets a single wishlist.
 
   Raises `Ecto.NoResultsError` if the Wishlist does not exist.

@@ -7,7 +7,7 @@ defmodule WishlistBe.Token do
 
   # Function to fetch the secret key from configuration or environment variable
   defp secret_key do
-    Application.fetch_env!(:wishlist_be, WishlistBe.Token)[:secret_key]
+    Application.fetch_env!(:wishlist_be, WishlistBe.Guardian)[:secret_key]
   end
 
   # Define a function to return the signer

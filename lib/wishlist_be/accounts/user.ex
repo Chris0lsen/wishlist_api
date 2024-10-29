@@ -9,7 +9,7 @@ defmodule WishlistBe.Accounts.User do
 
     many_to_many :groups, WishlistBe.Groups.Group, join_through: "users_groups"
     has_many :priorities, WishlistBe.Priorities.Priority
-    has_many :refresh_tokens, MyApp.Accounts.RefreshToken
+    has_many :refresh_tokens, WishlistBe.Accounts.RefreshToken
 
     timestamps(type: :utc_datetime)
   end
@@ -17,8 +17,9 @@ defmodule WishlistBe.Accounts.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:name, :email])
-    |> validate_required([:name, :email])
+    |> cast(attrs, [:name, :email, :steam_id])
+    |> validate_required([:steam_id])
     |> unique_constraint(:email)
+    |> unique_constraint(:steam_id)
   end
 end
