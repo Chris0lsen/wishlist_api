@@ -68,13 +68,13 @@ config :swoosh, :api_client, false
 config :wishlist_be, :urls,
   frontend: [
     scheme: "http",
-    host: "192.168.68.90",
+    host: "localhost",
     port: 5173,
     path: "/auth/steam/callback"
   ],
   backend: [
     scheme: "http",
-    host: "192.168.68.90",
+    host: "localhost",
     port: 4000,
     path: "/api/auth/steam/return"
   ]
