@@ -24,6 +24,9 @@ defmodule WishlistBeWeb.Router do
 
     get "/steam/wishlist", SteamController, :wishlist
 
+    get "/groups/:user_id", GroupController, :index
+    get "/groups/:user_id/groups/:id", GroupController, :get
+
     get "/wishlists/:user_id", WishlistController, :index
     get "/wishlists/:user_id/wishlist/:id", WishlistController, :get
   end

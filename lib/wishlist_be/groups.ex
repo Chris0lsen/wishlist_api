@@ -22,6 +22,23 @@ defmodule WishlistBe.Groups do
   end
 
   @doc """
+  Returns all groups for a given user
+
+  ## Examples
+
+      iex> list_groups_for_user(1)
+      [%Group{}, ...]
+
+  """
+  def list_groups_for_user(user_id) do
+    query =
+      from g in Group,
+        where: g.user_id == ^user_id
+
+    Repo.all(query)
+  end
+
+  @doc """
   Gets a single group.
 
   Raises `Ecto.NoResultsError` if the Group does not exist.
