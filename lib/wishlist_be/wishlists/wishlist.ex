@@ -4,7 +4,8 @@ defmodule WishlistBe.Wishlists.Wishlist do
 
   schema "wishlists" do
     field :name, :string
-    field :group_id, :id
+
+    belongs_to :group, WishlistBe.Groups.Group
 
     many_to_many :games, WishlistBe.Games.Game, join_through: "wishlists_games"
     has_many :priorities, WishlistBe.Priorities.Priority

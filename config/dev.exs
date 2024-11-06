@@ -65,19 +65,5 @@ config :phoenix, :plug_init_mode, :runtime
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
 
-config :wishlist_be, :urls,
-  frontend: [
-    scheme: "http",
-    host: "localhost",
-    port: 5173,
-    path: "/auth/steam/callback"
-  ],
-  backend: [
-    scheme: "http",
-    host: "localhost",
-    port: 4000,
-    path: "/api/auth/steam/return"
-  ]
-
   config :wishlist_be, WishlistBe.Guardian,
   secret_key: "secret"

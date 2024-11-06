@@ -1,5 +1,7 @@
 defmodule WishlistBe.Steam do
+  require Logger
   @openid_endpoint "https://steamcommunity.com/openid/login"
+  @steam_game_api_url "https://store.steampowered.com/api/appdetails"
 
   def generate_openid_redirect_url do
     params = [
@@ -86,5 +88,25 @@ defmodule WishlistBe.Steam do
       port: config[:port],
       path: config[:path]
     }
+  end
+
+  @doc """
+  Get a game from Steam by its id, returning an :ok tuple.
+
+  ## Examples
+
+      iex> get_game_by_id(123)
+      {:ok, %{id: 123, name: "My Game"}}
+
+      iex> get_game_by_id(456)
+      {:error, :steam_game_not_found}
+  """
+  def get_game_by_id(steam_id) do
+    case Req.get("#{@steam_game_api_url}/#{steam_id}") do
+      {:ok, body} -> body
+      {:error, error} ->
+        Logger.warning(error)
+        {:error, :steam_game_not_found}
+    end
   end
 end

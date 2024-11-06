@@ -67,9 +67,7 @@ def get_or_create_user_by_steam_id(steam_id) when is_binary(steam_id) do
 
         repo.update(group_changeset)
       end)
-      |> IO.inspect()
       |> Ecto.Multi.insert(:wishlist, fn %{group: group} ->
-        IO.inspect(group, label: "GROUP")
         Wishlist.changeset(%Wishlist{}, %{group_id: group.id, name: "My First Wishlist"})
       end)
       |> Repo.transaction()

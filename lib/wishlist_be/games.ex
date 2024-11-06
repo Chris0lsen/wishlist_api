@@ -7,6 +7,7 @@ defmodule WishlistBe.Games do
   alias WishlistBe.Repo
 
   alias WishlistBe.Games.Game
+  alias WishlistBe.Steam
 
   @doc """
   Returns the list of games.
@@ -36,6 +37,27 @@ defmodule WishlistBe.Games do
 
   """
   def get_game!(id), do: Repo.get!(Game, id)
+
+  @doc """
+  Gets a single game by its Steam id, returning an :ok tuple
+
+  Returns an :error tuple if the game does not exist
+
+  ## Examples
+
+      iex> get_game_by_steam_id(123)
+      {:ok, %Game{}}
+
+      iex> get_game_by_steam_id(456)
+      {:error, :game_not_found}
+  """
+
+  def get_game_by_steam_id(steam_id) do
+    case Repo.get_by(Game, steam_id: steam_id) do
+      nil -> create_game_from_steam_id(steam_id)
+      game -> {:ok, game}
+    end
+  end
 
   @doc """
   Creates a game.
@@ -100,5 +122,12 @@ defmodule WishlistBe.Games do
   """
   def change_game(%Game{} = game, attrs \\ %{}) do
     Game.changeset(game, attrs)
+  end
+
+  defp create_game_from_steam_id(steam_id) do
+    case Steam.get_game_by_id(steam_id) do
+      {:ok, %{id: steam_id, name: name}} -> create_game(%{steam_id: steam_id, name: name})
+      _ -> nil
+    end
   end
 end

@@ -39,19 +39,22 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+# config/config.exs
+
 config :wishlist_be, :urls,
   frontend: [
     scheme: "http",
-    host: "localhost",
-    port: 5173,
+    host: System.get_env("FRONTEND_HOST") || "localhost",
+    port: String.to_integer(System.get_env("FRONTEND_PORT") || "5173"),
     path: "/auth/steam/callback"
   ],
   backend: [
     scheme: "http",
-    host: "localhost",
-    port: 4000,
+    host: System.get_env("BACKEND_HOST") || "localhost",
+    port: String.to_integer(System.get_env("BACKEND_PORT") || "4000"),
     path: "/api/auth/steam/return"
   ]
+
 
   config :wishlist_be, WishlistBe.Guardian,
   issuer: "wishlist_be",

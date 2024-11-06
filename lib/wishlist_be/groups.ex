@@ -22,6 +22,33 @@ defmodule WishlistBe.Groups do
   end
 
   @doc """
+  Returns all groups for the given user, optionally with wishlists.
+
+  ## Examples
+
+      iex> list_groups_for_user(123)
+      [%Group{}]
+
+      iex> list_groups_for_user(123, preload_wishlists: true)
+      [%Group{wishlists: [...]}, ...]
+
+  """
+  def list_groups_for_user(user_id, opts \\ []) do
+    preloads =
+      if Keyword.get(opts, :preload_wishlists, false) do
+        [:wishlists]
+      else
+        []
+      end
+
+    Group
+    |> join(:inner, [g], u in assoc(g, :users))
+    |> where([g, u], u.id == ^user_id)
+    |> preload(^preloads)
+    |> Repo.all()
+  end
+
+  @doc """
   Gets a single group.
 
   Raises `Ecto.NoResultsError` if the Group does not exist.
@@ -36,6 +63,20 @@ defmodule WishlistBe.Groups do
 
   """
   def get_group!(id), do: Repo.get!(Group, id)
+
+  @doc """
+  Gets a single group, returning an :ok tuple
+
+  ## Examples
+
+      iex> get_group(123)
+      {:ok, %Group{}}
+
+      iex> get_group!(456)
+      {:error, Ecto.NoResultsError}
+
+  """
+  def get_group(id), do: Repo.get(Group, id)
 
   @doc """
   Creates a group.

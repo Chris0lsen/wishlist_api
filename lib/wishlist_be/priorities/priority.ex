@@ -5,9 +5,9 @@ defmodule WishlistBe.Priorities.Priority do
   schema "priorities" do
     field :priority, :integer
 
-    belongs_to :user, YourApp.Accounts.User
-    belongs_to :game, YourApp.Games.Game
-    belongs_to :wishlist, YourApp.Wishlists.Wishlist
+    belongs_to :user, WishlistBe.Accounts.User
+    belongs_to :game, WishlistBe.Games.Game
+    belongs_to :wishlist, WishlistBe.Wishlists.Wishlist
 
     timestamps(type: :utc_datetime)
   end

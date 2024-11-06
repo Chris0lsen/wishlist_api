@@ -44,9 +44,17 @@ defmodule WishlistBeWeb.Endpoint do
     pass: ["*/*"],
     json_decoder: Phoenix.json_library()
 
+  config = Application.compile_env(:wishlist_be, :urls)[:frontend]
+
+  frontend_url = %URI{
+    scheme: config[:scheme],
+    host: config[:host],
+    port: config[:port]
+  }
+
   plug Plug.MethodOverride
   plug Plug.Head
   plug Plug.Session, @session_options
-  plug CORSPlug, origin: ["http://ha.local:5173", "http://localhost:5173"]
+  plug CORSPlug, origin: [URI.to_string(frontend_url)]
   plug WishlistBeWeb.Router
 end

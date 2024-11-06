@@ -24,8 +24,12 @@ defmodule WishlistBeWeb.Router do
 
     get "/steam/wishlist", SteamController, :wishlist
 
-    get "/wishlists/:user_id", WishlistController, :index
-    get "/wishlists/:user_id/wishlist/:id", WishlistController, :get
+    get "/wishlists/:user_id/wishlists", WishlistController, :index
+    get "/wishlists/:wishlist_id", WishlistController, :get
+    post "/wishlists/:wishlist_id/games/steam/:steam_id", WishlistController, :add_by_steam_id
+
+
+    get "/users/:user_id/groups", GroupController, :index
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
