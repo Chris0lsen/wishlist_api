@@ -146,15 +146,17 @@ def add_game_to_wishlist_by_steam_id(wishlist_id, steam_id) do
 
         case Repo.update(changeset) do
           {:ok, updated_wishlist} ->
-            {:ok, updated_wishlist}
+            updated_wishlist
 
           {:error, changeset} ->
             Repo.rollback(changeset)
         end
       end
     else
-      {:error, reason} ->
-        Repo.rollback(reason)
+      {:error, :wishlist_not_found} ->
+        Repo.rollback(:wishlist_not_found)
+      nil ->
+        Repo.rollback(:unexpected_error)
     end
   end)
 end
