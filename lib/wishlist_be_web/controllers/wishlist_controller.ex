@@ -15,6 +15,7 @@ defmodule WishlistBeWeb.WishlistController do
       render(conn, "show.json", wishlist: wishlist)
     end
   end
+
   def add_by_steam_id(conn, %{"wishlist_id" => wishlist_id, "steam_id" => steam_id}) do
     case Wishlists.add_game_to_wishlist_by_steam_id(wishlist_id, steam_id) do
       {:ok, wishlist} -> json(conn, wishlist)
