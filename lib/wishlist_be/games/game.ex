@@ -6,7 +6,7 @@ defmodule WishlistBe.Games.Game do
     field :name, :string
     field :steam_id, :string
 
-    many_to_many :wishlists, YourApp.Wishlists.Wishlist, join_through: "wishlists_games"
+    many_to_many :wishlists, WishlistBe.Wishlists.Wishlist, join_through: WishlistBe.WishlistsGames.WishlistGame
     has_many :priorities, WishlistBe.Priorities.Priority
 
     timestamps(type: :utc_datetime)

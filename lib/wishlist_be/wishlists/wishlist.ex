@@ -2,12 +2,13 @@ defmodule WishlistBe.Wishlists.Wishlist do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @derive {Jason.Encoder, only: [:name]}
   schema "wishlists" do
     field :name, :string
 
     belongs_to :group, WishlistBe.Groups.Group
 
-    many_to_many :games, WishlistBe.Games.Game, join_through: "wishlists_games"
+    many_to_many :games, WishlistBe.Games.Game, join_through: WishlistBe.WishlistsGames.WishlistGame
     has_many :priorities, WishlistBe.Priorities.Priority
 
     timestamps(type: :utc_datetime)

@@ -1,7 +1,7 @@
 defmodule WishlistBe.Steam do
   require Logger
   @openid_endpoint "https://steamcommunity.com/openid/login"
-  @steam_game_api_url "https://store.steampowered.com/api/appdetails"
+  @steam_game_api_url "https://store.steampowered.com/api/appdetails?appids="
 
   def generate_openid_redirect_url do
     params = [
@@ -102,8 +102,9 @@ defmodule WishlistBe.Steam do
       {:error, :steam_game_not_found}
   """
   def get_game_by_id(steam_id) do
-    case Req.get("#{@steam_game_api_url}/#{steam_id}") do
-      {:ok, body} -> body
+    case Req.get("#{@steam_game_api_url}#{steam_id}") do
+      {:ok, %{status: 200, body: body}} ->
+        {:ok, %{id: steam_id, name: body[steam_id]["data"]["name"]}}
       {:error, error} ->
         Logger.warning(error)
         {:error, :steam_game_not_found}
