@@ -124,45 +124,42 @@ defmodule WishlistBe.Wishlists do
       iex> add_game_to_wishlist(wishlist_id, bad_steam_id)
       {:error, $Ecto.Changeset{}}
   """
-def add_game_to_wishlist_by_steam_id(wishlist_id, steam_id) do
-  import Ecto.Query, warn: false
+  def add_game_to_wishlist_by_steam_id(wishlist_id, steam_id) do
+    import Ecto.Query, warn: false
 
-  Repo.transaction(fn ->
-    with {:ok, wishlist} <- get_wishlist(wishlist_id),
-         {:ok, game} <- Games.get_game_by_steam_id(steam_id) do
+    Repo.transaction(fn ->
+      with {:ok, wishlist} <- get_wishlist(wishlist_id),
+          {:ok, game} <- Games.get_game_by_steam_id(steam_id) do
 
-      # Preload the games association
-      wishlist = Repo.preload(wishlist, :games)
+        # Preload the games association
+        wishlist = Repo.preload(wishlist, :games)
 
-      # Check if the game is already associated with the wishlist
-      if Enum.any?(wishlist.games, &(&1.id == game.id)) do
-        {:ok, wishlist}  # Game is already in the wishlist
-      else
-        # Create a changeset to add the game to the wishlist
-        changeset =
-          wishlist
-          |> Ecto.Changeset.change()
-          |> Ecto.Changeset.put_assoc(:games, [game | wishlist.games])
+        # Check if the game is already associated with the wishlist
+        if Enum.any?(wishlist.games, &(&1.id == game.id)) do
+          {:ok, wishlist}  # Game is already in the wishlist
+        else
+          # Create a changeset to add the game to the wishlist
+          changeset =
+            wishlist
+            |> Ecto.Changeset.change()
+            |> Ecto.Changeset.put_assoc(:games, [game | wishlist.games])
 
-        case Repo.update(changeset) do
-          {:ok, updated_wishlist} ->
-            updated_wishlist
+          case Repo.update(changeset) do
+            {:ok, updated_wishlist} ->
+              updated_wishlist
 
-          {:error, changeset} ->
-            Repo.rollback(changeset)
+            {:error, changeset} ->
+              Repo.rollback(changeset)
+          end
         end
+      else
+        {:error, :wishlist_not_found} ->
+          Repo.rollback(:wishlist_not_found)
+        nil ->
+          Repo.rollback(:unexpected_error)
       end
-    else
-      {:error, :wishlist_not_found} ->
-        Repo.rollback(:wishlist_not_found)
-      nil ->
-        Repo.rollback(:unexpected_error)
-    end
-  end)
-end
-
-
-
+    end)
+  end
 
   @doc """
   Deletes a wishlist.

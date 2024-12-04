@@ -23,6 +23,26 @@ defmodule WishlistBe.Games do
   end
 
   @doc """
+    Returns all games for a given wishlist.
+
+    ## Examples
+
+        iex> list_games_for_wishlist(wishlist_id)
+        {:ok, %Game{}}
+
+    """
+  def list_games_for_wishlist(wishlist_id) do
+    query =
+      from g in WishlistBe.Games.Game,
+        join: w in assoc(g, :wishlists),
+        where: w.id == ^wishlist_id,
+        select: g,
+        preload: [wishlists: w]
+
+    Repo.all(query)
+  end
+
+  @doc """
   Gets a single game.
 
   Raises `Ecto.NoResultsError` if the Game does not exist.
