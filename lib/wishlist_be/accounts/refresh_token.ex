@@ -7,9 +7,9 @@ defmodule WishlistBe.Accounts.RefreshToken do
     field :expires_at, :utc_datetime
     field :revoked, :boolean, default: false
 
-    belongs_to :user, MyApp.Accounts.User
+    belongs_to :user, WishlistBe.Accounts.User
 
-    timestamps()
+    timestamps(type: :utc_datetime)
   end
 
   @doc false

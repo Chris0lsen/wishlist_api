@@ -1,4 +1,4 @@
-defmodule MyApp.Repo.Migrations.CreateRefreshTokens do
+defmodule WishlistBe.Repo.Migrations.CreateRefreshTokens do
   use Ecto.Migration
 
   def change do
